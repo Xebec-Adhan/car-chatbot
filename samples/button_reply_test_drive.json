@@ -1,0 +1,43 @@
+{
+  "object": "whatsapp_business_account",
+  "entry": [
+    {
+      "id": "123456789012345",
+      "changes": [
+        {
+          "value": {
+            "messaging_product": "whatsapp",
+            "metadata": {
+              "display_phone_number": "15551234567",
+              "phone_number_id": "100000000000001"
+            },
+            "contacts": [
+              {
+                "profile": {
+                  "name": "Rahul Sharma"
+                },
+                "wa_id": "919999900001"
+              }
+            ],
+            "messages": [
+              {
+                "from": "919999900001",
+                "id": "wamid.HBgMOTE5OTk5OTAwMDAxFQIAERgSMTAwMDAwMDAwMDAwMDAyAA==",
+                "timestamp": "1731333060",
+                "type": "interactive",
+                "interactive": {
+                  "type": "button_reply",
+                  "button_reply": {
+                    "id": "book_test_drive",
+                    "title": "Book test drive"
+                  }
+                }
+              }
+            ]
+          },
+          "field": "messages"
+        }
+      ]
+    }
+  ]
+}
