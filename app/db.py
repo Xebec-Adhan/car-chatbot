@@ -85,19 +85,30 @@ class Message(Base):
     customer: Mapped["Customer"] = relationship(back_populates="messages")
 
 
+DATABASE_URL = os.getenv("DATABASE_URL")
 DB_PATH = os.getenv("DB_PATH", "dealership.db")
-engine = create_engine(f"sqlite:///{DB_PATH}", connect_args={"check_same_thread": False})
+
+if DATABASE_URL:
+    # Production: NeonDB / PostgreSQL on Railway
+    engine = create_engine(DATABASE_URL)
+else:
+    # Local development: SQLite
+    engine = create_engine(f"sqlite:///{DB_PATH}", connect_args={"check_same_thread": False})
+
 SessionLocal = sessionmaker(engine, expire_on_commit=False)
 
 
 def init_db() -> None:
     """Create all tables if they don't exist."""
     Base.metadata.create_all(engine)
-    cols = {c["name"] for c in inspect(engine).get_columns("customers")}
-    if "handoff_requested" not in cols:
-        raise RuntimeError(
-            "Database schema is out of date. Run: python -m scripts.seed --reset"
-        )
+    # Schema check only applies to SQLite (local dev); on PostgreSQL tables are
+    # created fresh from the models above so they are always up to date.
+    if not DATABASE_URL:
+        cols = {c["name"] for c in inspect(engine).get_columns("customers")}
+        if "handoff_requested" not in cols:
+            raise RuntimeError(
+                "Database schema is out of date. Run: python -m scripts.seed --reset"
+            )
 
 
 @contextmanager
