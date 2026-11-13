@@ -85,15 +85,32 @@ def seed(reset: bool = False) -> None:
         if s.scalar(select(func.count(Car.id))):
             log.info("cars table already populated; use --reset to reload")
             return
+        # List of your actual car image URLs
+        car_images = [
+            "https://ik.imagekit.io/forproject/Cars/Swift%20VXi%20AMT.jpg",
+            "https://ik.imagekit.io/forproject/Cars/Celerio%20VXi%20CNG.webp",
+            "https://ik.imagekit.io/forproject/Cars/Baleno%20Delta.webp",
+            "https://ik.imagekit.io/forproject/Cars/Kwid%20RXT.webp",
+            "https://ik.imagekit.io/forproject/Cars/Alto%20K10%20VXi.webp",
+            "https://ik.imagekit.io/forproject/Cars/Grand%20i10%20Nios%20Sportz.png",
+            "https://ik.imagekit.io/forproject/Cars/Swift%20ZXi.webp",
+            "https://ik.imagekit.io/forproject/Cars/Tiago%20XZ.webp",
+            "https://ik.imagekit.io/forproject/Cars/WagonR%20VXi.jpg"
+        ]
+
         for i, row in enumerate(ROWS, start=1):
             make, model, year, price, km, fuel, trans, body, seats, days, promo, status = row
+
+            # Cycles through the image list using modulo so it never goes out of bounds
+            image_url = car_images[(i - 1) % len(car_images)]
+
             s.add(
                 Car(
                     make=make, model=model, year=year, price=price, km_driven=km,
                     fuel_type=fuel, transmission=trans, body_type=body, seats=seats,
                     date_added=today - timedelta(days=days),
                     promo_offer=promo,
-                    image_url=f"https://ik.imagekit.io/forproject/eyes_ctcE5ZJ66.png?updatedAt=1777301578481",  # placeholder
+                    image_url=image_url,
                     status=status,
                 )
             )

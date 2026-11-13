@@ -232,10 +232,11 @@ def _tool_search_cars(customer: Customer, args: dict[str, Any], session: Session
 
     customer.profile = req.model_dump(exclude_none=True)  # reassign so SQLAlchemy sees the change
     cars = search_cars(req, session)
-    # Only surface cars to the dispatcher when the saved criteria actually changed.
-    # Otherwise the model re-runs search_cars on every turn and the customer gets
-    # the same images + buttons re-sent (see app/main.py:process_incoming_message).
-    if reply is not None and cars and customer.profile != prev_profile:
+    # Only surface results when the saved criteria changed, so the same cars are
+    # not resent on unrelated turns. Assign even an empty result: a later search
+    # in this turn may have tightened the criteria after an earlier match, and
+    # the dispatcher must not send those now-stale recommendations.
+    if reply is not None and customer.profile != prev_profile:
         reply.cars = cars
     result: dict[str, Any] = {"criteria_used": customer.profile, "cars": cars}
     if not cars:
